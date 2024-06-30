@@ -1,0 +1,35 @@
+# see: https://github.com/fdaines/arch-go
+version: 1
+threshold:
+  coverage: 0
+dependenciesRules:
+  # Clean architecture dependency rules
+  - package: "**.internal/entity.**"
+    shouldOnlyDependsOn:
+      internal:
+        - "**.pkg.**"
+        - "**.internal/entity.**"
+  - package: "**.internal/usecase.**"
+    shouldOnlyDependsOn:
+      internal:
+        - "**.pkg.**"
+        - "**.internal/entity.**"
+        - "**.internal/usecase.**"
+        - "**.third_party/utils.**"
+  - package: "**.internal/adapter.**"
+    shouldOnlyDependsOn:
+      internal:
+        - "**.pkg.**"
+        - "**.internal/entity.**"
+        - "**.internal/usecase.**"
+        - "**.internal/adapter.**"
+        - "**.third_party/utils.**"
+  - package: "**.internal/infrastructure.**"
+    shouldOnlyDependsOn:
+      internal:
+        - "**.pkg.**"
+        - "**.internal/entity.**"
+        - "**.internal/usecase.**"
+        - "**.internal/adapter.**"
+        - "**.internal/infrastructure.**"
+        - "**.third_party/utils.**"

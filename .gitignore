@@ -1,0 +1,26 @@
+.idea
+.env
+.DS_Store
+
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+.gocache
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+bin
+deployments/docker-compose/.env
+vendor
+cmd/development
+
+.npmrc
+.yarnrc
+coverage.*

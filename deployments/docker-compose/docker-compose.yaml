@@ -1,0 +1,62 @@
+version: '3.9'
+
+services:
+  # Database
+  db:
+    build:
+      context: ./../postgres
+      dockerfile: Dockerfile
+    hostname: db
+    profiles:
+      - httpapi
+    env_file:
+      - ./../../deployments/docker-compose/.env.sample
+      - ./../../deployments/docker-compose/.env
+    ports:
+      - "5432:5432"
+
+  httpapi:
+    depends_on:
+      - db
+    image: docker.io/code7unner/alpine3.20-golang-1.21
+    profiles:
+      - httpapi
+    env_file:
+      - ./../../deployments/docker-compose/.env.sample
+      - ./../../deployments/docker-compose/.env
+    working_dir: /app
+    environment:
+      GO111MODULE: "on"
+    volumes:
+      - ./../../:/app
+    ports:
+      - "8080:8080"
+      - "40001:40000"
+    entrypoint: |
+      go run cmd/httpapi/main.go
+
+  # Swagger/OpenAPI (manual start)
+  swagger-ui:
+    # WEB UI: http://localhost:8085
+    image: swaggerapi/swagger-ui:v3.51.1
+    profiles:
+      - swagger
+    environment:
+      URL: /spec/httpapi.openapi.yaml
+    volumes:
+      - ./../../api/openapi-spec/httpapi.openapi.yaml:/usr/share/nginx/html/spec/httpapi.openapi.yaml
+    ports:
+      - "8085:8080"
+  swagger-editor:
+    # WEB UI: http://localhost:8086
+    build:
+      context: ./../../third_party/swagger-editor
+      dockerfile: Dockerfile
+    profiles:
+      - swagger
+    environment:
+      SWAGGER_FILE: /spec/httpapi.openapi.yaml
+    volumes:
+      - ./../../api/openapi-spec/httpapi.openapi.yaml:/spec/httpapi.openapi.yaml
+    ports:
+      - "8086:8080"

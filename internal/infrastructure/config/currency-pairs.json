@@ -1,0 +1,9 @@
+{
+  "EUR": ["USDT", "USDC", "ETH"],
+  "USD": ["USDT", "USDC", "ETH"],
+  "CNY": ["USDT", "USDC", "ETH"],
+
+  "USDT": ["EUR", "USD", "CNY"],
+  "USDC": ["EUR", "USD", "CNY"],
+  "ETH": ["EUR", "USD", "CNY"]
+}

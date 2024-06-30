@@ -1,0 +1,130 @@
+openapi: 3.0.3
+info:
+  title: Exchange rate calculator HTTP API
+  description: An OpenAPI definition for the exchange rate calculator HTTP API
+  version: v1
+servers:
+  - url: http://localhost:8080
+tags:
+  - name: currency
+    description: Currency operations
+paths:
+  /v1/currency:
+    get:
+      tags:
+        - currency
+      summary: Get currency value
+      parameters:
+        - $ref: '#/components/parameters/from'
+        - $ref: '#/components/parameters/to'
+        - $ref: '#/components/parameters/amount'
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  currency:
+                    $ref: '#/components/schemas/Currency'
+
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    from:
+      in: query
+      name: from
+      schema:
+        type: string
+        enum:
+          - EUR
+          - USD
+          - CNY
+          - USDT
+          - USDC
+          - ETH
+      description: from which currency the exchange will be carried out
+      example: USD
+      required: true
+    to:
+      in: query
+      name: to
+      schema:
+        type: string
+        enum:
+          - EUR
+          - USD
+          - CNY
+          - USDT
+          - USDC
+          - ETH
+      description: To which currency the exchange will be carried out
+      example: USDT
+      required: true
+    amount:
+      in: query
+      name: amount
+      schema:
+        type: number
+      description: Amount currency the exchange will be carried out
+      example: 2.0
+      required: true
+  schemas:
+    Currency:
+      type: number
+      description: amount of currency after exchange at the rate
+      example: 2.34468
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+          example: internal server error
+  responses:
+    BadRequest:
+      description: Illegal input for operation
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                description: Error message
+                example: bad request error
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFoundError:
+      description: Not found error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                description: Error message
+                example: currency pair not found
+    Options:
+      description: Allowed request methods
+      headers:
+        Allow:
+          schema:
+            type: string
+            description: Allowed request methods
+            example: OPTIONS, GET
